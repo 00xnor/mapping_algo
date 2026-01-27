@@ -3,7 +3,7 @@ from ant import Ant
 from ant_path import AntPath
 from ant_heuristic_params import AntHeuristicParams
 #------------------------------------------------------------------------------
-from collections import defaultdict
+from collections import Counter
 import networkx as nx
 import concurrent.futures
 import threading
@@ -44,10 +44,8 @@ class AntColony:
         assert mesh.edges[u, v]['weight'] > 0
 
     # for prioritizing shorter paths
-    grouped = defaultdict(list)
-    for u, v, data in me.mesh.edges(data=True):
-      if 'weight' in data:
-        grouped[data['weight']] = np.exp(-data['weight'])
+    c = Counter(data['weight'] for _, _, data in me.mesh.edges(data=True))
+    grouped = {k: [v, np.exp(-k)] for k, v in c.items()}
 
     me.ants = [Ant(mesh, dag, grouped, i) for i in range(num_ants)]
     me.log.i(f'ant colony consists of [{num_ants}] ants')

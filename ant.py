@@ -97,9 +97,9 @@ class Ant:
     time_total = time_route + time_link
     phi = 1/time_total # time component
 
-    p = (tau**me.alpha)*(phi**me.beta)    # energy-time heuristic
-    p += mesh_edge['pheromone']           # consider history
-    p += me.grouped[mesh_edge['weight']]  # prioritize shorter paths
+    p = (tau**me.alpha)*(phi**me.beta)        # energy-time heuristic
+    p += mesh_edge['pheromone']               # consider history
+    p += me.grouped[mesh_edge['weight']][1]   # prioritize shorter paths
 
     return p
 
@@ -114,7 +114,7 @@ class Ant:
     path = AntPath(me.mesh, me.dag, mesh_start, dag_start)
 
     # sort the edges so that the last node is processed last
-    # i.e. force the output to be at the bottom left of the mesh
+    # i.e. force the output to be at the bottom right of the mesh
     end_node = me.dag.order()-1
     dag_edges = sorted(
       list(nx.edge_bfs(me.dag)),
